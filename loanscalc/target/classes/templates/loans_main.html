@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Loans Calculator</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="loans.css">
+</head>
+<body>
+    <p th:text="'Hello, ' + ${name} + '!'" />
+
+    <form action="#" th:action="@{/loanscalc}" th:object="${loanOptionsDto}" method="post">
+    	<table>
+    		<thead><tr><th colspan="2">Controls</th></tr></thead>
+    		<tbody>
+    			<tr>
+    				<td>Initial Deposit ($)</td>
+    				<td><input type="text" th:field="*{initialDeposit}" /></td>
+    			</tr>
+    			<tr>
+    				<td>Monthly Income ($)</td>
+    				<td><input type="text" th:field="*{monthlyIncome}" /></td>
+    			</tr>
+    			<tr>
+    				<td>Interest Rate (%)</td>
+    				<td><input type="text" th:field="*{interestRate}" /></td>
+    			</tr>
+    			<tr>
+    				<td>Term</td>
+    				<td><input type="text" th:field="*{term}" /></td>
+    			</tr>
+    			<tr>
+    				<td>Monthly Expenses ($)</td>
+    				<td><input type="text" th:field="*{monthlyExpenses}" /></td>
+    			</tr>
+    		</tbody>
+    	</table>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+        
+        <div th:if="${#fields.hasAnyErrors()}">
+        	<ul>
+		        <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error" />
+		    </ul>
+		</div>
+    </form> 
+
+    <table>
+    	<thead>
+    		<tr>
+    			<th>Total Interest</th>
+    			<th>Mortgage</th>
+    			<th>Price</th>
+    			<th>Payment</th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		<tr>
+    			<td>
+    				<span th:text="${#numbers.formatCurrency(amortizationSummary.totalInterest)}"></span>
+    			</td>
+    			<td>
+    				<span th:text="${#numbers.formatCurrency(amortizationSummary.mortgageTotal)}"></span>
+    			</td>
+    			<td>
+    				<span th:text="${#numbers.formatCurrency(amortizationSummary.totalPriceHouse)}"></span>
+    			</td>
+	   			<td>
+    				<span th:text="${#numbers.formatCurrency(amortizationSummary.maxMonthlyPayment)}"></span>
+    			</td>
+    		</tr>
+    	</tbody>
+    </table>
+    <br>
+    <table>
+    	<thead>
+    		<tr>
+    			<th>Month</th>
+    			<th>Interest</th>
+    			<th>Capital</th>
+    			<th>Capital Left</th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		<tr th:if="${amortizationData.empty}">
+    			<td colspan="4">Input all the required data above</td>
+    		</tr>
+    		<tr th:each="amData : ${amortizationData}">
+    			<td><span th:text="${amData.period}"></span></td>
+    			<td><span th:text="${#numbers.formatCurrency(amData.amortizationInterest)}"></span></td>
+    			<td><span th:text="${#numbers.formatCurrency(amData.amortizationCapital)}"></span></td>
+    			<td><span th:text="${#numbers.formatCurrency(amData.remainingCapital)}"></span></td>
+    		</tr>
+    	</tbody>
+    </table>
+    
+</body>
+</html>
